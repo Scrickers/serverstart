@@ -1,0 +1,27 @@
+
+upstream weboverflows_fr {
+    server localhost:3000;
+}
+limit_req_zone $binary_remote_addr zone=one:10m rate=1r/s;
+server {
+    listen 80;
+    listen [::]:80; 
+    server_name weboverflows.fr;
+
+    location / {
+        proxy_pass http://weboverflows_fr;
+        proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;
+    }
+
+    location /websocket/ {
+        proxy_pass http://weboverflows_fr;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+
+}
