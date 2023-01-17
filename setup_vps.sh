@@ -22,13 +22,20 @@ systemctl restart nginx;
 adduser weboverflows;
 # conf web server
 cd /home/weboverflows/;
-git clone https://github.com/WebOverflows/web.git;
-cd web;
+git clone https://github.com/WebOverflows/back-end.git;
+git clone https://github.com/WebOverflows/front-end.git;
+cd /home/weboverflows/back-end/;
+npm i
+cd /home/weboverflows/front-end/;
 npm i;
 # configure pm2
 pm2 startup systemd;
-cd /home/weboverflows/web/;
-pm2 start index.js --name "weboverflows";
+cd /home/weboverflows/back-end/;
+npm run build;
+pm2 start dist/main.js --name "Back End";
+cd /home/weboverflows/front-end/;
+npm run build;
+pm2 start dist/main.js --name "Front End";
 pm2 save;
 # install fail2ban
 apt install -y fail2ban;
